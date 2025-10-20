@@ -23,13 +23,13 @@ public class ActivateSubscriptionCommandHandler : IRequestHandler<ActivateSubscr
     {
         var plan = await _planRepository.GetByIdAsync(request.PlanId);
         if (plan == null || !plan.IsActive)
-            return Result<UserSubscriptionDto>.Failure("Subscription plan not found or inactive");
+            return Result.Failure<UserSubscriptionDto>("Subscription plan not found or inactive");
 
         var activeSubscription = await _userSubscriptionRepository
             .GetActiveSubscriptionAsync(request.UserId);
 
         if (activeSubscription != null)
-            return Result<UserSubscriptionDto>.Failure("User already has an active subscription");
+            return Result.Failure<UserSubscriptionDto>("User already has an active subscription");
 
         var subscription = new UserSubscription(request.UserId, request.PlanId, plan);
         await _userSubscriptionRepository.AddAsync(subscription);
